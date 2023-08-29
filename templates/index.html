@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<title>Memorize</title>
+</head>
+<body>
+	<div class="container">
+		<form action="/tasks" method="get" accept-charset="utf-8">
+			
+		<div class="wrapper">
+		<label>Lang</label>
+		<select id="lang" name="lang" required>
+			<option value="english">English</option>
+			<option value="spanish" selected >Spanish</option>
+
+		</select>
+		</div>
+		<div class="wrapper">
+		<label>Book</label>
+		<select id="book" name="book" required></select>
+		</div>
+		<div class="wrapper">
+		<label>Chapter</label>
+		<select id="chapter"i name="chapter" required></select>
+		</div>
+		<div class="wrapper">
+		<label>Verse</label>
+		<select id="verse" name="verse" required></select>
+		</div>
+		<div class="wrapper">
+		<label>Verses</label>
+		<select name="verses" id="verses" required></select>
+		</div>
+
+		<div class="wrapper-btn">
+			<button type="submit">Submit</button>
+		</div>
+	</form>
+	</div>
+	<script src="/static/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	display: flex;
+	flex-direction: column;
+	height:90vh;
+	background-color: rgb(18,18,18);
+	color:white;
+}
+
+.container {
+	height:76%;
+	background: transparent;
+	margin-top: 4%;
+	overflow-x: hidden;
+}
+
+#chapter {
+	font-size: 1.5em;
+
+}
+
+#verse {
+	font-size: 0.8em;
+	text-align: center;
+	vertical-align: middle;
+}
+
+#text {
+	font-size: 1.2em;
+}
+.footer {
+	height:20%;
+	border: 1px solid black;
+}
+	</style>
+	<title>Memorize</title>
+</head>
+<body>
+	<div class="container">
+		<span id="chapter">{{ chapter }}</span>
+		{% for verse in text %}
+		<p>
+		<span id="verse">{{ verse[2] }}</span>
+		<span id="text">{{ verse[3] | safe }}</span>
+		</p>
+		{% endfor %}
+	</div>
+	<div class="footer">
+	<h3>Activities</h3>
+		<div class="tasks">
+			<button id="first-letter">first</button>
+			<button id="random-word">random</button>
+			<button id="pick-words">pick</button>
+
+		</div>
+	</div>	
+</body>
+</html>
