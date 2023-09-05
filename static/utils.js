@@ -1,4 +1,32 @@
-class Randomize {
+export class Randomizer {
+	constructor(text) {
+		this.text = text
+		this.state = text
+		this.classes = this._getClasses()
+	}
+
+	_getClasses() {
+		let classes = []
+		for (const verse of this.text) {
+			let cls = new Randomize(verse["text"])
+			classes.push(cls)
+		}
+		return classes
+	}
+	takeWords() {
+		for (let i=0;i<this.text.length;i++) {
+			this.classes[i].takeWords()
+			this.state[i]["state"] = this.classes[i].state
+		}
+	}
+	reset() {
+		for (let i=0;i<this.text.length;i++) {
+			this.classes[i].reset()
+			this.state[i]["state"] = this.classes[i].state
+		}
+	}
+}
+export class Randomize {
 	constructor(text) {
 		this.text = text;
 		this.words = text.split(" ")
@@ -22,9 +50,9 @@ class Randomize {
 		if (available.length>0) {
 			let rand = available[Math.floor(Math.random() * available.length)]
 			this._changeWordState(rand)
-			console.log(rand)
 		}	
 	}
+
 	}
 	_changeWordState(index) {
 		for (const objt of this.state) {
@@ -45,13 +73,11 @@ class Randomize {
 	reset() {
 		this.state = []
 		this._wordsToObjt()
-		console.log(this.state)
 	}
 }
 
-let string = "alex pedro julian jose maria andres amor arto perro cola cosa manzana mango banano lapiz peso alex pedro julian"
 
-class GuessWord {
+export class GuessWord {
 	constructor(text) {
 		this.text = text;
 		this.step = 0;
@@ -78,7 +104,7 @@ class GuessWord {
 		let n
 		if (this.words.length<4) {
 			n = 1;
-		} else if (this.words.length>=4 && this.words.length <6) {
+		} else if (this.words.length>=4 && this.words.length < 6) {
 			n = 3
 		} else {
 			n = 5;
@@ -120,11 +146,113 @@ class GuessWord {
 		}
 		return false
 	}
+	goFirst(word) {
+		if (word[0]==this.state[this.step]["text"][0]) {
+			this.state[this.step]["hidden"] = false;
+			this.step += 1
+			return true
+		}
+		return false
+	}
+	reset() {
+		this.state = [];
+		this.step = 0;
+		this._wordsToObjt()
+	}
 
 }
 
-let g = new GuessWord(string)
-g.go("alex")
-g.go("alex")
-console.log(g.step)
-console.log(g.state)
+export class GuessWords {
+	constructor(text) {
+		this.text = text;
+		this.state = text;
+		this.classes = this._getClasses()
+		this._setState()
+		this.step = 0;
+		this.verseStep = 0;
+		this.current = this.state[this.verseStep]
+		this.currentWord = this.current["state"][this.step]["text"]
+		this.currentOpts = this.current["state"][this.step]["options"]
+	}
+	_getClasses() {
+		let classes = []
+		for (const verse of this.text) {
+		let cls = new GuessWord(verse["text"])
+		classes.push(cls)
+		}
+		return classes
+	}
+	_setState() {
+		for (let i=0;i<this.text.length;i++) {
+			this.classes[i].reset()
+			this.state[i]["state"] = this.classes[i].state
+		}
+	}
+	go(wordGuess) {
+		let word = this.state[this.verseStep]["state"][this.step]["text"]
+		if (wordGuess==word) {
+			this.state[this.verseStep]["state"][this.step]["hidden"] = false;
+			this.step +=1
+			if (this.step==this.state[this.verseStep]["state"].length) {
+				this.verseStep +=1
+				this.step = 0
+				
+			}
+			return true
+		}
+		return false
+	}
+	reset() {
+		this._setState()
+	}
+}
+
+export class FirstLetter {
+	constructor(text) {
+		// array of verses
+		this.text = text;
+	}
+	_getLetter(word) {
+		let chars = ["(","!","¿"];
+		let letter = ""
+		for (const c of chars) {
+			if (word[0] ==c &&  word.length > 1) {
+			letter = word[1]
+			} else {
+				letter = word[0]
+			}
+		}
+		return letter
+	}
+	_parseVerse(verse) {
+		// array of verses
+		let parsedVerse = ""
+		let words = verse.split(" ")
+		for (const w of words) {
+			let letter = this._getLetter(w)
+			parsedVerse += letter
+
+		}
+		return parsedVerse
+	}
+	parse() {
+		for (const verse of this.text) {
+			let parsed = this._parseVerse(verse["text"])
+			verse["parsed"] = parsed
+		}
+		return this.text
+	}
+}
+
+let verses = [{"text":"hola alexander ortiz"},{"text":"this is alexander on a recorded line"},{"text":"i miss emily"},{"text":"I am going to bed now"}]
+
+let g = new GuessWords(verses)
+console.log(g.go("hola"))
+console.log(g.go("alexander"))
+console.log(g.go("ortiz"))
+console.log(g.go("this"))
+console.log(g.go("on"))
+console.log(g.go("alexander"))
+console.log(g.state[0])
+g.reset()
+console.log(g.state[0])

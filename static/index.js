@@ -1,87 +1,138 @@
-var info = ""
+import {Randomizer,FirstLetter, GuessWords} from './utils.js'
 
-let lang = document.querySelector("select#lang")
-let bookdrop = document.querySelector("select#book")
-let chapterdrop = document.querySelector("select#chapter")
-let versedrop = document.querySelector("select#verse")
-let versesdrop = document.querySelector("select#verses")
-lang.onchange = getInfo
-book.onchange = handleCombos
-chapter.onchange = handleCombosChapter
+let container = document.querySelector("div.container")
 
-function getInfo() {
-	let lang = document.querySelector("select#lang").value
-	fetch("/info", {
-		method: 'POST',
-		body: JSON.stringify({"lang":lang}),
-		headers: {'Content-Type': 'application/json'},
-
-	})
-		.then(response => response.json())
-		.then(data => {
-			info = data["data"]
-			populateCombos(data["data"])
-		})
-		.catch(error => {
-			console.log(error);
-		});
-}
-
-window.onload = () => {
-	getInfo()
-}
-
-function populateCombos(data) {
-	let booksCombo = document.querySelector("select#book")
-	booksCombo.innerHTML = ""
-	chapter.innerHTML = ""
-	verse.innerHTML = ""
-	for (const [key,value] of Object.entries(data)) {
-		let opt = document.createElement("option")
-		opt.value = key
-		opt.text = value["long_name"]
-		booksCombo.add(opt)
+function getVerses() {
+	let verses = [];
+	let divsContent = document.querySelectorAll("div.content");
+	for (const div of divsContent) {
+		let verse = processVerse(div)
+		verses.push(verse)
 	}
-	handleCombos()
+	return verses
 }
 
-
-function handleCombos() {
-	let numChapters = info[bookdrop.value]["chapters"]
-	chapterdrop.innerHTML = ""
-	versedrop.innerHTML = ""
-	versesdrop.innerHTML = ""
-	for (let i=1;i<=numChapters;i++) {
-	let optChapter = document.createElement("option")
-	optChapter.value = i
-	optChapter.text = i
-	chapterdrop.add(optChapter)
-	
+function processVerse(verseDiv) {
+	let verse = {
+		"book":"",
+		"chapter":"",
+		"verse":"",
+		"text":""
 	}
-	handleCombosChapter()
+	let verseNumber = verseDiv.querySelector("span#verse").innerText
+	let text = verseDiv.querySelector("span#text").innerText
+	verse["verse"] = verseNumber
+	verse["text"] = text
+	return verse
 }
 
-
-function handleCombosChapter() {
-	versedrop.innerHTML = ""
-	versesdrop.innerHTML = ""
-	let numVerses = info[bookdrop.value]["verses"][parseInt(chapterdrop.value) - 1]
-	console.log(info[bookdrop.value]["verses"])
-	for (let i=1;i<=numVerses;i++) {
-	let optVerse = document.createElement("option")
-	let optVerses = document.createElement("option")
-	optVerse.value = i
-	optVerse.text = i
-	optVerses.value = i
-	optVerses.text = i
-	versedrop.add(optVerse)
-	versesdrop.add(optVerses)
+function getText(verses) {
+	let text = ""
+	for (const v of verses) {
+		text += " " + v.text
 	}
-	toggleWords("alex ortiz cuellar best programmer")
+	return text
 }
 
-function toggleWords(text) {
-	let words = text.split(" ")
-	let percent = words.length >7 ? words.length * 0.18:words.length * 0.5
-	
+let verses = getVerses()
+// let text = getText(verses)
+
+let randomizer = new Randomizer(verses)
+let guesser = new GuessWords(verses)
+let reader = new FirstLetter(verses)
+
+let trainBtn = document.querySelector("button.train")
+
+trainBtn.addEventListener("click", ()=>{
+	setReading()
+})
+
+let hideBtn = document.querySelector("button#hide")
+
+hideBtn.addEventListener("click", ()=>{
+	hideWords(false)
+})
+let randResetBtn = document.querySelector("button#rand-reset")
+randResetBtn.addEventListener("click", ()=>{
+	resetRand()
+})
+
+function createElements() {
+		let div = document.createElement("div")
+		div.classList.add("content")
+		let p = document.createElement("p")
+		let spanVerse = document.createElement("span")
+		spanVerse.id = "verse"
+		let spanText = document.createElement("span")
+		spanText.id = "text"
+		p.appendChild(spanVerse)
+		p.appendChild(spanText)
+		div.appendChild(p)
+		container.appendChild(div)
+	return [div,spanText,spanVerse]
+}
+
+function hideWords(clear) {
+	container.innerHTML = ""
+	randomizer.takeWords()
+	if (clear) {
+		randomizer.reset()
+	}
+	for (const verse of randomizer.state) {
+		const [_,spanText,spanVerse] = createElements()
+		for (const word of verse["state"]) {
+		let span = document.createElement("span")
+		span.innerText = word["text"] + " "
+		spanText.appendChild(span)
+			if (word["hidden"] == true) {
+				span.classList.add("hidden")
+			}
+		}
+		spanVerse.innerText = verse["verse"]
+	}
+
+}
+
+function resetRand() {
+	hideWords(true)
+}
+
+function handleGuess() {
+	for (const verse of guesser.state) {
+		const [_,spanText,spanVerse] = createElements()
+		for (const word of verse["state"]) {
+			let span = document.createElement("span")
+			span.innerText = word["text"]
+			spanText.appendChild(span)
+			if (word["hidden"]==true) {
+				span.classList.add("hidden")
+			} else {
+				span.classList.remove("hidden")
+			}
+		}
+		spanVerse.innerText = verse["verse"]
+	}
+	let div = document.createElement("div")
+	for (const opt of guesser.currentOpts) {
+
+	} 
+} 
+
+function setReading() {
+	container.innerHTML = ""
+	for (const verse of reader.parse()) {
+		let div = document.createElement("div")
+		div.classList.add("content")
+		let p = document.createElement("p")
+		let spanVerse = document.createElement("span")
+		spanVerse.id = "verse"
+		spanVerse.innerText = verse["verse"]
+		let spanText = document.createElement("span")
+		spanText.id = "text"
+		spanText.innerText = verse["parsed"]
+		p.appendChild(spanVerse)
+		p.appendChild(spanText)
+		div.appendChild(p)
+		container.appendChild(div)
+	}
 }

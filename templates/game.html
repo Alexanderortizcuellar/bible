@@ -17,6 +17,7 @@ body {
 	background: transparent;
 	margin-top: 4%;
 	overflow-x: hidden;
+	word-wrap: break-word;
 }
 
 #chapter {
@@ -28,10 +29,14 @@ body {
 	font-size: 0.8em;
 	text-align: center;
 	vertical-align: middle;
+	padding-right: 4px;
 }
 
 #text {
-	font-size: 1.2em;
+	font-size: 1.3em;
+}
+.hidden {
+	filter:blur(6px);
 }
 .footer {
 	height:20%;
@@ -41,13 +46,16 @@ body {
 	<title>Memorize</title>
 </head>
 <body>
+	<a href="http://localhost:5000">Back</a>
 	<div class="container">
 		<span id="chapter">{{ chapter }}</span>
 		{% for verse in text %}
+		<div class="content">
 		<p>
 		<span id="verse">{{ verse[2] }}</span>
 		<span id="text">{{ verse[3] | safe }}</span>
 		</p>
+		</div>
 		{% endfor %}
 	</div>
 	<div class="footer">
@@ -56,8 +64,19 @@ body {
 			<button id="first-letter">first</button>
 			<button id="random-word">random</button>
 			<button id="pick-words">pick</button>
-
+			<button class="train">train</button>
 		</div>
-	</div>	
+		<div class="first-letter-wrap">	
+		</div>
+		<div class="guess-word-wrap">
+			
+		</div>
+		<div class="hide-wrap">
+			<button id="hide">Hide</button>
+			<button id="rand-reset">reset</button>
+		</div>
+	</div>
+	<script src="/static/utils.js" type="module"></script>
+	<script src="/static/index.js" type="module"></script>
 </body>
 </html>
