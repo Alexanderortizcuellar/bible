@@ -8,12 +8,17 @@ body {
 	display: flex;
 	flex-direction: column;
 	height:90vh;
-	background-color: rgb(18,18,18);
-	color:white;
+	color:rgb(220,220,220);
+	background-color: rgb(25,25,25);
+	/*
+	background-color: #f4d8b0;
+	background-color: #f5deb3;
+	*/
+
 }
 
 .container {
-	height:76%;
+	height:70%;
 	background: transparent;
 	margin-top: 4%;
 	overflow-x: hidden;
@@ -22,31 +27,74 @@ body {
 
 #chapter {
 	font-size: 1.5em;
-
+	color:white;
 }
 
+h3#quote {
+	color:white;
+}
 #verse {
 	font-size: 0.8em;
 	text-align: center;
 	vertical-align: middle;
 	padding-right: 4px;
+	color:white;
 }
 
 #text {
-	font-size: 1.3em;
+	font-size: 1.2em;
+	color:black;
+	color: rgb(215,215,215);
 }
 .hidden {
 	filter:blur(6px);
 }
 .footer {
 	height:20%;
-	border: 1px solid black;
+}
+div.tasks {
+	display:flex;
+	justify-content: space-between;
+}
+
+div.tasks button {
+	width:65px;
+	height:38px;
+	font-size: 1em;
+}
+div.options {
+	display:flex;
+	padding:10px 25px;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	align-items: center;
+	width:100%;
+}
+div.options button {
+	background-color: #002e3f;
+	border:none;
+	outline:none;
+	color:rgb(215,215,215);
+	height:35px;
+	padding: 8px 6px;
+	font-size: 1em;
+	margin-bottom: 8px;
+}
+input#letter {
+	width:8px;
+	outline:none;
+	border:none;
+	display: none;
 }
 	</style>
 	<title>Memorize</title>
 </head>
 <body>
 	<a href="http://localhost:5000">Back</a>
+	<div class="header" style="display: flex;flex-direction: row;justify-content: space-between;align-items: center;">
+	<h3 id="quote">{{ quote }}</h3>
+	<span><input type="text" id="letter"></span>
+	</div>
 	<div class="container">
 		<span id="chapter">{{ chapter }}</span>
 		{% for verse in text %}
@@ -59,22 +107,34 @@ body {
 		{% endfor %}
 	</div>
 	<div class="footer">
-	<h3>Activities</h3>
+	<h3 id="tasks">Activities</h3>
+	<button class="back" style="display: none;">Back</button>
 		<div class="tasks">
 			<button id="first-letter">first</button>
-			<button id="random-word">random</button>
+			<button id="hide-words">random</button>
 			<button id="pick-words">pick</button>
-			<button class="train">train</button>
+			<button id="train">train</button>
 		</div>
-		<div class="first-letter-wrap">	
+		<div class="guess-letter-wrap" style="display:none;">
+			<input type="text" id="letter"><br>
+			<button id="guess-letter-reset">Reset</button>
 		</div>
-		<div class="guess-word-wrap">
+		<div class="guess-word-wrap" style="display:none;">
+			<div class="options"></div>
+			<button id="guess-reset">
+				Reset
+			</button>
 			
 		</div>
-		<div class="hide-wrap">
+		<div class="hide-wrap" style="display:none;">
 			<button id="hide">Hide</button>
 			<button id="rand-reset">reset</button>
 		</div>
+	<div class="train-wrap" style="display: none;">
+	<button id="toggle-train" >
+		Toggle
+	</button>
+	</div>
 	</div>
 	<script src="/static/utils.js" type="module"></script>
 	<script src="/static/index.js" type="module"></script>

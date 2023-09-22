@@ -54,6 +54,7 @@ func ProcessText(verse Text) Text {
 	verse.text = strings.Replace(verse.text, "/n", "", -1)
 	var newText string
 	for _, word := range strings.Split(verse.text, " ") {
+		fmt.Println(word)
 		newText += GetLetter(word)
 	}
 	newRow.book = verse.book

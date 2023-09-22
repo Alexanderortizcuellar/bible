@@ -1,6 +1,33 @@
 import {Randomizer,FirstLetter, GuessWords} from './utils.js'
 
+let full = false;
 let container = document.querySelector("div.container")
+let tasksCon = document.querySelector("div.tasks")
+let h3Tasks = document.querySelector("h3#tasks")
+let backBtn = document.querySelector("button.back")
+let hideCon = document.querySelector("div.hide-wrap")
+let guessCon = document.querySelector("div.guess-word-wrap")
+let guessOptionsCon = guessCon.querySelector("div.options")
+let guessLetterCon = document.querySelector("div.guess-letter-wrap")
+let letterInput = document.querySelector("input#letter")
+addEvent()
+let trainCon = document.querySelector("div.train-wrap")
+
+for (const b of tasksCon.querySelectorAll("button")) {
+	b.addEventListener("click", ()=>{
+		switchMode(b.id)
+	})
+}
+
+backBtn.addEventListener("click", ()=>{
+	tasksCon.style.display = "flex"
+	backBtn.style.display = "none"
+	letterInput.style.display = "none"
+	hideCons()
+	resetGuess()
+	resetRand()
+	full = false;
+})
 
 function getVerses() {
 	let verses = [];
@@ -41,7 +68,7 @@ let randomizer = new Randomizer(verses)
 let guesser = new GuessWords(verses)
 let reader = new FirstLetter(verses)
 
-let trainBtn = document.querySelector("button.train")
+let trainBtn = document.querySelector("button#toggle-train")
 
 trainBtn.addEventListener("click", ()=>{
 	setReading()
@@ -55,6 +82,19 @@ hideBtn.addEventListener("click", ()=>{
 let randResetBtn = document.querySelector("button#rand-reset")
 randResetBtn.addEventListener("click", ()=>{
 	resetRand()
+})
+
+
+let guessResetBtn = document.querySelector("button#guess-reset")
+guessResetBtn.addEventListener("click", ()=>{
+	resetGuess()
+})
+
+let guessLetterResetBtn = document.querySelector("button#guess-letter-reset")
+guessLetterResetBtn.addEventListener("click", ()=>{
+	resetGuess()
+	letterInput.value = ""
+	letterInput.focus()
 })
 
 function createElements() {
@@ -97,12 +137,13 @@ function resetRand() {
 	hideWords(true)
 }
 
-function handleGuess() {
+function handleGuess(first) {
+	container.innerHTML = ""
 	for (const verse of guesser.state) {
 		const [_,spanText,spanVerse] = createElements()
 		for (const word of verse["state"]) {
 			let span = document.createElement("span")
-			span.innerText = word["text"]
+			span.innerText = word["text"] + " "
 			spanText.appendChild(span)
 			if (word["hidden"]==true) {
 				span.classList.add("hidden")
@@ -112,11 +153,29 @@ function handleGuess() {
 		}
 		spanVerse.innerText = verse["verse"]
 	}
-	let div = document.createElement("div")
-	for (const opt of guesser.currentOpts) {
-
-	} 
+	if (first==false) {
+		addOptions()
+	}
 } 
+
+function addOptions() {
+	guessOptionsCon.innerHTML = ""
+	for (const opt of guesser.currentOpts) {
+		let optBtn = document.createElement("button")
+		optBtn.innerText = opt
+		guessOptionsCon.appendChild(optBtn)
+		optBtn.addEventListener("click", (evt)=>{
+	let check = guesser.go(evt.currentTarget.innerText.trim(), false)
+		if (check) {
+		    handleGuess(false)
+		}
+		}) 
+	}
+}
+function resetGuess() {
+	guesser.reset()
+	handleGuess(false)
+}
 
 function setReading() {
 	container.innerHTML = ""
@@ -129,10 +188,72 @@ function setReading() {
 		spanVerse.innerText = verse["verse"]
 		let spanText = document.createElement("span")
 		spanText.id = "text"
-		spanText.innerText = verse["parsed"]
+		spanText.innerText = toggleText(verse["text"],verse["parsed"])
 		p.appendChild(spanVerse)
 		p.appendChild(spanText)
 		div.appendChild(p)
 		container.appendChild(div)
 	}
+	if (full) {
+		full = false
+	} else {
+		full = true
+	}
+
+}
+
+function toggleText(opt1,opt2) {
+	if (full) {
+		return opt1
+	}
+	return opt2
+}
+
+function addEvent() {
+	letterInput.addEventListener("input", (evt)=>{
+		let value = evt.target.value
+		let letter = value.charAt(value.length-1)
+		letterInput.value = letter
+		let check = guesser.go(letter.toLowerCase(), true)
+		if (check) {
+			handleGuess(true)
+		}
+
+	})
+}
+
+function hideCons() {
+	let cons = [hideCon, guessCon, guessLetterCon, trainCon]
+	for (const con of cons) {
+		con.style.display = "none"
+	}
+}
+function switchMode(mode) {
+	if (mode=="hide-words") {
+		hideCons()
+		hideCon.style.display = "flex"
+	}
+	if (mode=="pick-words") {
+		hideCons()
+		guessCon.style.display = "flex"
+		resetGuess()
+		handleGuess(false)
+	}
+	if (mode=="first-letter") {
+		hideCons()
+		letterInput.style.display = "block"
+		letterInput.focus()
+		guessLetterCon.style.display = "flex"
+		letterInput.value = ""
+		resetGuess()
+		handleGuess(true)
+	}
+	if (mode=="train") {
+		hideCons()
+		trainCon.style.display = "flex"
+	}
+	tasksCon.style.display = "none"
+	h3Tasks.style.display = "none"
+	backBtn.style.display = "block"
+
 }

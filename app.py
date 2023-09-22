@@ -50,10 +50,13 @@ def go_tasks():
     chapter = request.args.get("chapter")
     verse = request.args.get("verse")
     verses = request.args.get("verses")
-    print(lang, book, chapter, verse)
     book_index = data[lang][book]["index"]
     text = load_data(lang, book_index, chapter, verse, verses)
-    temp = render_template("game.html", chapter=chapter, text=text)
+    quote = f"{book} {chapter}:{verse}"
+    if len(text) > 1:
+        quote += f"-{text[-1][2]}"
+    print(quote)
+    temp = render_template("game.html", chapter=chapter, text=text, quote=quote)
     return temp
 
 

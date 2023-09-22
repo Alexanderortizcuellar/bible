@@ -188,22 +188,53 @@ export class GuessWords {
 			this.state[i]["state"] = this.classes[i].state
 		}
 	}
-	go(wordGuess) {
+	_fixWord(word) {
+		word = word.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+		let letter
+		let pattern = new RegExp(/^[a-zA-Z-0-9]/)
+		let matches = pattern.exec(word)
+		if (matches==null && word.length>1) {
+			letter = word[1]
+		} else {
+			letter = word[0]
+		}
+
+		return letter.toLowerCase()
+	}
+	go(wordGuess, first) {
+			if (this.verseStep>=this.state.length) {
+				this.currentOpts = []
+				return false
+			}
 		let word = this.state[this.verseStep]["state"][this.step]["text"]
+		if (first) {
+		     word = this._fixWord(word)
+		}
 		if (wordGuess==word) {
 			this.state[this.verseStep]["state"][this.step]["hidden"] = false;
 			this.step +=1
-			if (this.step==this.state[this.verseStep]["state"].length) {
+			if (this.step>=this.state[this.verseStep]["state"].length) {
 				this.verseStep +=1
-				this.step = 0
-				
+				this.step = 0	
 			}
+			if (this.verseStep>=this.state.length) {
+				this.currentOpts = []
+				return true
+			}
+			this.current = this.state[this.verseStep]
+			this.currentWord = this.current["state"][this.step]["text"]
+			this.currentOpts = this.current["state"][this.step]["options"]
 			return true
 		}
 		return false
 	}
 	reset() {
 		this._setState()
+		this.step = 0;
+		this.verseStep = 0;
+		this.current = this.state[this.verseStep]
+		this.currentWord = this.current["state"][this.step]["text"]
+		this.currentOpts = this.current["state"][this.step]["options"]
 	}
 }
 
@@ -244,15 +275,4 @@ export class FirstLetter {
 	}
 }
 
-let verses = [{"text":"hola alexander ortiz"},{"text":"this is alexander on a recorded line"},{"text":"i miss emily"},{"text":"I am going to bed now"}]
 
-let g = new GuessWords(verses)
-console.log(g.go("hola"))
-console.log(g.go("alexander"))
-console.log(g.go("ortiz"))
-console.log(g.go("this"))
-console.log(g.go("on"))
-console.log(g.go("alexander"))
-console.log(g.state[0])
-g.reset()
-console.log(g.state[0])
