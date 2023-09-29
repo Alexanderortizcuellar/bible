@@ -12,6 +12,7 @@ let guessLetterCon = document.querySelector("div.guess-letter-wrap")
 let letterInput = document.querySelector("input#letter")
 addEvent()
 let trainCon = document.querySelector("div.train-wrap")
+let backLink = document.querySelector("a#back-link")
 
 for (const b of tasksCon.querySelectorAll("button")) {
 	b.addEventListener("click", ()=>{
@@ -23,10 +24,13 @@ backBtn.addEventListener("click", ()=>{
 	tasksCon.style.display = "flex"
 	backBtn.style.display = "none"
 	letterInput.style.display = "none"
+	h3Tasks.style.display = "block"
+	backLink.style.display = "flex"
 	hideCons()
 	resetGuess()
 	resetRand()
 	full = false;
+	changeHeight(true)
 })
 
 function getVerses() {
@@ -84,18 +88,31 @@ randResetBtn.addEventListener("click", ()=>{
 	resetRand()
 })
 
-
+/*
 let guessResetBtn = document.querySelector("button#guess-reset")
 guessResetBtn.addEventListener("click", ()=>{
 	resetGuess()
 })
-
+*/
 let guessLetterResetBtn = document.querySelector("button#guess-letter-reset")
+console.log(guessLetterResetBtn)
 guessLetterResetBtn.addEventListener("click", ()=>{
 	resetGuess()
 	letterInput.value = ""
 	letterInput.focus()
 })
+
+function changeHeight(out) {
+	let footer = document.querySelector("div.footer")
+	if (out) {
+		container.style.height = "60%"
+		footer.style.height = "28%" 
+
+	} else {
+		container.style.height = "75%"
+		footer.style.height = "12%"
+	}
+}
 
 function createElements() {
 		let div = document.createElement("div")
@@ -168,6 +185,8 @@ function addOptions() {
 	let check = guesser.go(evt.currentTarget.innerText.trim(), false)
 		if (check) {
 		    handleGuess(false)
+		} else {
+			navigator.vibrate(200)
 		}
 		}) 
 	}
@@ -217,6 +236,8 @@ function addEvent() {
 		let check = guesser.go(letter.toLowerCase(), true)
 		if (check) {
 			handleGuess(true)
+		} else {
+			navigator.vibrate(200)
 		}
 
 	})
@@ -255,5 +276,6 @@ function switchMode(mode) {
 	tasksCon.style.display = "none"
 	h3Tasks.style.display = "none"
 	backBtn.style.display = "block"
-
+	backLink.style.display = "none"
+	changeHeight(false)
 }

@@ -107,7 +107,7 @@ export class GuessWord {
 		} else if (this.words.length>=4 && this.words.length < 6) {
 			n = 3
 		} else {
-			n = 5;
+			n = 4;
 		}
 		let available = this._checkState(list)
 		for (let i=0;i<n;i++) {
@@ -244,11 +244,12 @@ export class FirstLetter {
 		this.text = text;
 	}
 	_getLetter(word) {
-		let chars = ["(","!","¿"];
+		let chars = ["(","¡","¿"];
 		let letter = ""
 		for (const c of chars) {
 			if (word[0] ==c &&  word.length > 1) {
 			letter = word[1]
+			break
 			} else {
 				letter = word[0]
 			}

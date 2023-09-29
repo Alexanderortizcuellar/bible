@@ -10,6 +10,8 @@ body {
 	height:90vh;
 	color:rgb(220,220,220);
 	background-color: rgb(25,25,25);
+	padding:0;
+	margin:0;
 	/*
 	background-color: #f4d8b0;
 	background-color: #f5deb3;
@@ -17,14 +19,75 @@ body {
 
 }
 
-.container {
-	height:70%;
+#header-wrap {
+	display:flex;
+	align-items: center;
+}
+button.back {
+	border:none;
+	width:15%;
+	height:25px;
 	background: transparent;
-	margin-top: 4%;
-	overflow-x: hidden;
-	word-wrap: break-word;
+	outline:none;
+	text-align: left;
+	font-size: 1em;
+	background-image: url("/static/BDL.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	padding-right: 10px;
 }
 
+a#back-link {
+	text-align: center;
+	width:12%;
+	height:23px;
+	padding-right: 10px;
+	vertical-align: middle;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+a#back-link:active {
+	background-color: none;
+}
+
+.header {
+	height:5%;
+	padding:0 12px;
+}
+.header h3 {
+	vertical-align: middle;
+}
+
+.header-wrap {
+	padding:0 12px;
+}
+
+.header-wrap h3 {
+	text-align: center;
+}
+div.line {
+	width:100%;
+	height:2px;
+	border-top: 2px solid #448EE2;
+	margin-bottom: 3px;
+}
+.container {
+	height:60%;
+	background: transparent;
+	margin-top: 1%;
+	overflow-x: hidden;
+	word-wrap: break-word;
+	padding:12px;
+	position:relative;
+
+}
+
+.container::-webkit-scrollbar {
+	display: none;
+}
 #chapter {
 	font-size: 1.5em;
 	color:white;
@@ -50,17 +113,57 @@ h3#quote {
 	filter:blur(6px);
 }
 .footer {
-	height:20%;
-}
-div.tasks {
-	display:flex;
-	justify-content: space-between;
+	height:28%;
+	padding:12px;
 }
 
-div.tasks button {
+div.tasks {
+	display:flex;
+	justify-content: space-around;
+	align-items: center;
+	align-content: center;
+}
+
+
+div.progress {
+	background-color:rgb(210,210,210);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width:68px;
+	height:68px;
+	border-radius: 50%;
+}
+div.task-wrap {
 	width:65px;
-	height:38px;
+	height:65px;
+	border-radius: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position:relative;
+	background-color: rgb(25,25,25);
+}
+
+
+div.tasks button {
+	width:70%;
+	height:30px;
 	font-size: 1em;
+	background: transparent;
+}
+
+
+button#hide {
+	width:90%;
+	height:32px;
+	margin-right: 5px;
+}
+button#toggle-train {
+	width:100%;
+	height:32px;
+	font-size:1em;
 }
 div.options {
 	display:flex;
@@ -74,11 +177,12 @@ div.options button {
 	background-color: #002e3f;
 	border:none;
 	outline:none;
-	color:rgb(215,215,215);
+	color:rgb(210,210,210);
+	min-width: 45px;
 	height:35px;
 	padding: 8px 6px;
-	font-size: 1em;
-	margin-bottom: 8px;
+	font-size: 1.1em;
+	margin-bottom: 4px;
 }
 input#letter {
 	width:8px;
@@ -86,17 +190,65 @@ input#letter {
 	border:none;
 	display: none;
 }
+#rand-reset {
+	background-image: url("/static/4O.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	min-width: 40px;
+}
+#guess-letter-reset {
+	background-image: url("/static/4O.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	min-width: 50px;
+}
+#guess-reset {
+	background-image: url("/static/4O.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	min-width: 40px;
+}
+.footer button {
+	background-color:#002e3f;
+	color:rgb(220,220,220);
+	border:none;
+	outline:none;
+}
+button#show-keys {
+	width:95%;
+	height:32px;
+	font-size: 1em;
+	margin-right: 3px;
+}
+span#kpi {
+	position:absolute;
+	height:15px;
+	width:45px;
+	text-align: center;
+	background-color: green;
+	transform:translateY(29px);
+	color:rgb(220,220,220);
+	background-color: rgb(25,25,25);
+	vertical-align: middle;
+}
 	</style>
 	<title>Memorize</title>
 </head>
 <body>
-	<a href="http://localhost:5000">Back</a>
+	<div id="header-wrap">
+	<button class="back" style="display: none;"></button>
+	<a id="back-link" href="http://localhost:5000"><img src="/static/BDL.png"></a><h3>Memorizing</h3>
+	</div>
+	<div class="line">
+	</div><br>
 	<div class="header" style="display: flex;flex-direction: row;justify-content: space-between;align-items: center;">
 	<h3 id="quote">{{ quote }}</h3>
 	<span><input type="text" id="letter"></span>
 	</div>
 	<div class="container">
-		<span id="chapter">{{ chapter }}</span>
 		{% for verse in text %}
 		<div class="content">
 		<p>
@@ -108,27 +260,45 @@ input#letter {
 	</div>
 	<div class="footer">
 	<h3 id="tasks">Activities</h3>
-	<button class="back" style="display: none;">Back</button>
 		<div class="tasks">
+			<div class="progress">
+			<div class="task-wrap">
 			<button id="first-letter">first</button>
-			<button id="hide-words">random</button>
+			<span id="kpi">0/1</span>
+			</div>
+			</div>
+			<div class="progress">
+			<div class="task-wrap">
+			<button id="hide-words">hide</button>
+			<span id="kpi">0/1</span>
+			</div>
+			</div>
+			<div class="progress">
+			<div class="task-wrap">
 			<button id="pick-words">pick</button>
+			<span id="kpi">0/1</span>
+			</div>
+			</div>
+			<div class="progress">
+			<div class="task-wrap">
 			<button id="train">train</button>
+			<span id="kpi">0/0</span>
+			</div>
+			</div>
 		</div>
 		<div class="guess-letter-wrap" style="display:none;">
 			<input type="text" id="letter"><br>
-			<button id="guess-letter-reset">Reset</button>
+			<button id="show-keys">Show keyboard</button>
+			<button id="guess-letter-reset"></button>
 		</div>
 		<div class="guess-word-wrap" style="display:none;">
 			<div class="options"></div>
-			<button id="guess-reset">
-				Reset
 			</button>
 			
 		</div>
 		<div class="hide-wrap" style="display:none;">
 			<button id="hide">Hide</button>
-			<button id="rand-reset">reset</button>
+			<button id="rand-reset"></button>
 		</div>
 	<div class="train-wrap" style="display: none;">
 	<button id="toggle-train" >
