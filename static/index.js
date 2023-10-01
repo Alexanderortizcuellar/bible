@@ -13,6 +13,9 @@ let letterInput = document.querySelector("input#letter")
 addEvent()
 let trainCon = document.querySelector("div.train-wrap")
 let backLink = document.querySelector("a#back-link")
+let showKeys = document.querySelector("button#show-keys")
+
+showKeys.addEventListener("click", ()=>{letterInput.focus()})
 
 for (const b of tasksCon.querySelectorAll("button")) {
 	b.addEventListener("click", ()=>{
@@ -88,12 +91,12 @@ randResetBtn.addEventListener("click", ()=>{
 	resetRand()
 })
 
-/*
+
 let guessResetBtn = document.querySelector("button#guess-reset")
 guessResetBtn.addEventListener("click", ()=>{
 	resetGuess()
 })
-*/
+
 let guessLetterResetBtn = document.querySelector("button#guess-letter-reset")
 console.log(guessLetterResetBtn)
 guessLetterResetBtn.addEventListener("click", ()=>{
@@ -140,6 +143,9 @@ function hideWords(clear) {
 		for (const word of verse["state"]) {
 		let span = document.createElement("span")
 		span.innerText = word["text"] + " "
+		span.addEventListener("click", (evt)=>{
+				flashText(evt.currentTarget)
+			})
 		spanText.appendChild(span)
 			if (word["hidden"] == true) {
 				span.classList.add("hidden")
@@ -161,6 +167,9 @@ function handleGuess(first) {
 		for (const word of verse["state"]) {
 			let span = document.createElement("span")
 			span.innerText = word["text"] + " "
+			span.addEventListener("click", (evt)=>{
+				flashText(evt.currentTarget)
+			})
 			spanText.appendChild(span)
 			if (word["hidden"]==true) {
 				span.classList.add("hidden")
@@ -175,8 +184,26 @@ function handleGuess(first) {
 	}
 } 
 
+function flashText(span) {
+	if (span.classList.contains("hidden")) {
+		span.classList.remove("hidden")
+		setTimeout(()=>{
+			span.classList.add("hidden")
+		}, 400)	
+	}
+}
+
 function addOptions() {
 	guessOptionsCon.innerHTML = ""
+	if (guesser.currentOpts.length==0) {
+		guessResetBtn.style.display = "block"
+		guessResetBtn.style.width = "100%"
+		guessOptionsCon.style.display = "none"
+	
+	} else {
+		guessResetBtn.style.display = "none"
+		guessOptionsCon.style.display = "flex"
+	}
 	for (const opt of guesser.currentOpts) {
 		let optBtn = document.createElement("button")
 		optBtn.innerText = opt

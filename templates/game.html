@@ -167,7 +167,7 @@ button#toggle-train {
 }
 div.options {
 	display:flex;
-	padding:10px 25px;
+	padding:10px 10px;
 	justify-content: space-around;
 	flex-wrap: wrap;
 	align-items: center;
@@ -183,6 +183,7 @@ div.options button {
 	padding: 8px 6px;
 	font-size: 1.1em;
 	margin-bottom: 4px;
+	margin-right: 4px;
 }
 input#letter {
 	width:8px;
@@ -292,8 +293,9 @@ span#kpi {
 			<button id="guess-letter-reset"></button>
 		</div>
 		<div class="guess-word-wrap" style="display:none;">
-			<div class="options"></div>
-			</button>
+			<div class="options">
+			</div>
+			<button id="guess-reset" style="display:none;height:35px"></button>	
 			
 		</div>
 		<div class="hide-wrap" style="display:none;">
