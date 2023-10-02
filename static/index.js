@@ -214,6 +214,7 @@ function addOptions() {
 		    handleGuess(false)
 		} else {
 			navigator.vibrate(200)
+			console.log(guesser.state)
 		}
 		}) 
 	}

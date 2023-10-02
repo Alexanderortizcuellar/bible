@@ -1,0 +1,22 @@
+
+body {
+	background-image: url("/static/nV.jpg");
+}
+#chapter {
+	font-size:5em;
+	color:#117c88;
+	font-weight: bold;
+}
+.content {
+	widows: 100%;
+}
+.verse {
+	font-weight: bolder;
+	color:#117c58;
+	font-size: 2em;
+}
+.text {
+	font-size:4.8em;
+	color:rgb(5,5,5);
+	overflow-wrap: break-word;
+}

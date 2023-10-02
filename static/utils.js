@@ -80,16 +80,18 @@ export class Randomize {
 export class GuessWord {
 	constructor(text) {
 		this.text = text;
+		this.flags = ["normal", "low", "middle", "high"]
 		this.step = 0;
 		this.state = [];
 		this.words = this.text.split(" ")
 		this.filteredWords = this._removeDuplicates(this.words)
 		this._wordsToObjt()
+
 	}
 
 	_wordsToObjt() {
 		for (let i=0;i<this.words.length;i++) {
-			let item = {"index":i,"text":this.words[i],"options":this._addOptions(this.words[i]),"hidden":true}
+			let item = {"index":i,"text":this.words[i],"options":this._addOptions(this.words[i]),"hidden":true, "flag":"normal", "step":0}
 			this.state.push(item)
 		}
 	}
@@ -166,6 +168,7 @@ export class GuessWords {
 	constructor(text) {
 		this.text = text;
 		this.state = text;
+		this.flags = ["normal", "low", "middle", "high"]
 		this.classes = this._getClasses()
 		this._setState()
 		this.step = 0;
@@ -226,6 +229,8 @@ export class GuessWords {
 			this.currentOpts = this.current["state"][this.step]["options"]
 			return true
 		}
+		this.current["state"][this.step]["step"] +=1
+		this.current["state"]["flag"] = this.flags[this.current["state"][this.step]["step"]]
 		return false
 	}
 	reset() {

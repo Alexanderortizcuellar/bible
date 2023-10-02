@@ -3,6 +3,7 @@ from flask import Flask, jsonify, render_template, request
 import sqlite3
 from rich import print
 
+
 app = Flask(__name__)
 
 
@@ -10,8 +11,7 @@ with open("books.json") as f:
     data = json.load(f)
 
 
-def load_data(lang, book,
-              chapt, verse, verses):
+def load_data(lang, book, chapt, verse, verses):
     repl_value = ""
     clean_data = []
     db = "esv.db" if lang == "english" else "rvr1960.db"
@@ -28,14 +28,34 @@ def load_data(lang, book,
     data = cursor.fetchall()
     for row in data:
         clean_data.append(list(row))
+
     for row in range(len(data)):
         clean_data[row][3] = clean_data[row][3].replace("/n", repl_value)
+        clean_data[row].append(get_first_letter(clean_data[row][3]))
     return clean_data
 
 
 def get_first_letter(text: str):
-    pass
+    letters = ""
+    for word in text.split(" "):
+        word = word.strip()
+        if starts(word) and len(word) > 1:
+            letters += word[1]
+        else:
+            letters += word[0]
+    if len(letters) > 19:
+        letters_list = list(letters)
+        letters_list.insert(19, " ")
+        letters = "".join(letters_list)
+    return letters
 
+
+def starts(word):
+    letters = ["!", "¿", "("]
+    for letter in letters:
+        if word.startswith(letter):
+            return True
+    return False
 
 @app.route("/", methods=["GET"])
 def home():
@@ -56,7 +76,23 @@ def go_tasks():
     if len(text) > 1:
         quote += f"-{text[-1][2]}"
     print(quote)
-    temp = render_template("game.html", chapter=chapter, text=text, quote=quote)
+    temp = render_template(
+            "game.html",
+            chapter=chapter,
+            text=text, quote=quote)
+    return temp
+
+
+@app.route("/render")
+def render():
+    lang = request.args.get("lang")
+    book = request.args.get("book")
+    chapter = request.args.get("chapter")
+    verse = request.args.get("verse")
+    verses = request.args.get("verses")
+    book_index = data[lang][book]["index"]
+    text = load_data(lang, book_index, chapter, verse, verses)
+    temp = render_template("render.html", verses=text, chapter=chapter)
     return temp
 
 
