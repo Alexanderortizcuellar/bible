@@ -168,7 +168,7 @@ export class GuessWords {
 	constructor(text) {
 		this.text = text;
 		this.state = text;
-		this.flags = ["normal", "low", "middle", "high"]
+		this.flags = ["rgb(215,215,215)", "#FFBB5C", "#FF9B50", "#E25E3E", "#C63D2F"]
 		this.classes = this._getClasses()
 		this._setState()
 		this.step = 0;
@@ -176,6 +176,7 @@ export class GuessWords {
 		this.current = this.state[this.verseStep]
 		this.currentWord = this.current["state"][this.step]["text"]
 		this.currentOpts = this.current["state"][this.step]["options"]
+		this.wordFlag = this.current["state"][this.step]["flag"]
 	}
 	_getClasses() {
 		let classes = []
@@ -230,7 +231,11 @@ export class GuessWords {
 			return true
 		}
 		this.current["state"][this.step]["step"] +=1
-		this.current["state"]["flag"] = this.flags[this.current["state"][this.step]["step"]]
+		if (this.current["state"][this.step]["step"] > 4) {
+			return false
+		}
+		this.current["state"][this.step]["flag"] = this.flags[this.current["state"][this.step]["step"]]
+		this.wordFlag = this.current["state"][this.step]["flag"]
 		return false
 	}
 	reset() {

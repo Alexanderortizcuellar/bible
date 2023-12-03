@@ -167,10 +167,12 @@ function handleGuess(first) {
 		for (const word of verse["state"]) {
 			let span = document.createElement("span")
 			span.innerText = word["text"] + " "
+			span.style.color = word["flag"]
 			span.addEventListener("click", (evt)=>{
 				flashText(evt.currentTarget)
 			})
 			spanText.appendChild(span)
+
 			if (word["hidden"]==true) {
 				span.classList.add("hidden")
 			} else {
@@ -178,6 +180,11 @@ function handleGuess(first) {
 			}
 		}
 		spanVerse.innerText = verse["verse"]
+	}
+	let divs = document.querySelectorAll("div.content")
+	divs = Array.from(divs)
+	if (guesser.verseStep<divs.length) {
+		divs[guesser.verseStep].scrollIntoView()
 	}
 	if (first==false) {
 		addOptions()

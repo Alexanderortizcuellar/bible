@@ -42,20 +42,23 @@ def get_first_letter(text: str):
         if starts(word) and len(word) > 1:
             letters += word[1]
         else:
+            if word == "":
+                continue
             letters += word[0]
-    if len(letters) > 19:
+    if len(letters) > 34:
         letters_list = list(letters)
-        letters_list.insert(19, " ")
+        letters_list.insert(35, "<br>")
         letters = "".join(letters_list)
     return letters
 
 
 def starts(word):
-    letters = ["!", "¿", "("]
+    letters = ["¡", "¿", "(", "!"]
     for letter in letters:
         if word.startswith(letter):
             return True
     return False
+
 
 @app.route("/", methods=["GET"])
 def home():
@@ -92,7 +95,11 @@ def render():
     verses = request.args.get("verses")
     book_index = data[lang][book]["index"]
     text = load_data(lang, book_index, chapter, verse, verses)
-    temp = render_template("render.html", verses=text, chapter=chapter)
+    temp = render_template(
+            "render.html",
+            verses=text,
+            chapter=chapter,
+            book=book)
     return temp
 
 
@@ -101,3 +108,6 @@ def get_info():
     lang = request.get_json().get("lang")
     lang_info = data[lang]
     return jsonify({"data": lang_info})
+
+
+app.run(host="192.168.1.9", port=5000)

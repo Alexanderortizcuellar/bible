@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="/static/style-render.css">
 <body>
 	<span id="chapter">
+		<span>
+		{{ book  }}  
+		</span>
 		{{ chapter }}
 	</span>	
 	{% for verse in verses %}
@@ -15,7 +18,7 @@
 	<p>
 		<span class="verse">{{ verse[2] }}</span>
 		<span class="text">
-			{{ verse[4] }}
+			{{ verse[4]|safe }}
 		</span>
 	</p>
 	</div>
