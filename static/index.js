@@ -1,4 +1,9 @@
-import {Randomizer,FirstLetter, GuessWords} from './utils.js'
+import {
+	Randomizer,
+	FirstLetter,
+	GuessWords,
+	Drag
+} from './utils.js'
 
 let full = false;
 let container = document.querySelector("div.container")
@@ -12,18 +17,23 @@ let guessLetterCon = document.querySelector("div.guess-letter-wrap")
 let letterInput = document.querySelector("input#letter")
 addEvent()
 let trainCon = document.querySelector("div.train-wrap")
+let dragCon = document.querySelector("div.drag")
 let backLink = document.querySelector("a#back-link")
+
 let showKeys = document.querySelector("button#show-keys")
 
-showKeys.addEventListener("click", ()=>{letterInput.focus()})
+let dragOptwrapper = document.querySelector("div.opt-wrapper")
+showKeys.addEventListener("click", () => {
+	letterInput.focus()
+})
 
 for (const b of tasksCon.querySelectorAll("button")) {
-	b.addEventListener("click", ()=>{
+	b.addEventListener("click", () => {
 		switchMode(b.id)
 	})
 }
 
-backBtn.addEventListener("click", ()=>{
+backBtn.addEventListener("click", () => {
 	tasksCon.style.display = "flex"
 	backBtn.style.display = "none"
 	letterInput.style.display = "none"
@@ -48,10 +58,10 @@ function getVerses() {
 
 function processVerse(verseDiv) {
 	let verse = {
-		"book":"",
-		"chapter":"",
-		"verse":"",
-		"text":""
+		"book": "",
+		"chapter": "",
+		"verse": "",
+		"text": ""
 	}
 	let verseNumber = verseDiv.querySelector("span#verse").innerText
 	let text = verseDiv.querySelector("span#text").innerText
@@ -69,37 +79,38 @@ function getText(verses) {
 }
 
 let verses = getVerses()
+console.log(verses)
 // let text = getText(verses)
 
 let randomizer = new Randomizer(verses)
 let guesser = new GuessWords(verses)
 let reader = new FirstLetter(verses)
-
+let dragger = new Drag(verses)
 let trainBtn = document.querySelector("button#toggle-train")
 
-trainBtn.addEventListener("click", ()=>{
+trainBtn.addEventListener("click", () => {
 	setReading()
 })
 
 let hideBtn = document.querySelector("button#hide")
 
-hideBtn.addEventListener("click", ()=>{
+hideBtn.addEventListener("click", () => {
 	hideWords(false)
 })
 let randResetBtn = document.querySelector("button#rand-reset")
-randResetBtn.addEventListener("click", ()=>{
+randResetBtn.addEventListener("click", () => {
 	resetRand()
 })
 
 
 let guessResetBtn = document.querySelector("button#guess-reset")
-guessResetBtn.addEventListener("click", ()=>{
+guessResetBtn.addEventListener("click", () => {
 	resetGuess()
 })
 
 let guessLetterResetBtn = document.querySelector("button#guess-letter-reset")
 console.log(guessLetterResetBtn)
-guessLetterResetBtn.addEventListener("click", ()=>{
+guessLetterResetBtn.addEventListener("click", () => {
 	resetGuess()
 	letterInput.value = ""
 	letterInput.focus()
@@ -109,7 +120,7 @@ function changeHeight(out) {
 	let footer = document.querySelector("div.footer")
 	if (out) {
 		container.style.height = "60%"
-		footer.style.height = "28%" 
+		footer.style.height = "28%"
 
 	} else {
 		container.style.height = "75%"
@@ -118,18 +129,18 @@ function changeHeight(out) {
 }
 
 function createElements() {
-		let div = document.createElement("div")
-		div.classList.add("content")
-		let p = document.createElement("p")
-		let spanVerse = document.createElement("span")
-		spanVerse.id = "verse"
-		let spanText = document.createElement("span")
-		spanText.id = "text"
-		p.appendChild(spanVerse)
-		p.appendChild(spanText)
-		div.appendChild(p)
-		container.appendChild(div)
-	return [div,spanText,spanVerse]
+	let div = document.createElement("div")
+	div.classList.add("content")
+	let p = document.createElement("p")
+	let spanVerse = document.createElement("span")
+	spanVerse.id = "verse"
+	let spanText = document.createElement("span")
+	spanText.id = "text"
+	p.appendChild(spanVerse)
+	p.appendChild(spanText)
+	div.appendChild(p)
+	container.appendChild(div)
+	return [div, spanText, spanVerse]
 }
 
 function hideWords(clear) {
@@ -139,14 +150,14 @@ function hideWords(clear) {
 		randomizer.reset()
 	}
 	for (const verse of randomizer.state) {
-		const [_,spanText,spanVerse] = createElements()
+		const [_, spanText, spanVerse] = createElements()
 		for (const word of verse["state"]) {
-		let span = document.createElement("span")
-		span.innerText = word["text"] + " "
-		span.addEventListener("click", (evt)=>{
+			let span = document.createElement("span")
+			span.innerText = word["text"] + " "
+			span.addEventListener("click", (evt) => {
 				flashText(evt.currentTarget)
 			})
-		spanText.appendChild(span)
+			spanText.appendChild(span)
 			if (word["hidden"] == true) {
 				span.classList.add("hidden")
 			}
@@ -163,17 +174,17 @@ function resetRand() {
 function handleGuess(first) {
 	container.innerHTML = ""
 	for (const verse of guesser.state) {
-		const [_,spanText,spanVerse] = createElements()
+		const [_, spanText, spanVerse] = createElements()
 		for (const word of verse["state"]) {
 			let span = document.createElement("span")
 			span.innerText = word["text"] + " "
 			span.style.color = word["flag"]
-			span.addEventListener("click", (evt)=>{
+			span.addEventListener("click", (evt) => {
 				flashText(evt.currentTarget)
 			})
 			spanText.appendChild(span)
 
-			if (word["hidden"]==true) {
+			if (word["hidden"] == true) {
 				span.classList.add("hidden")
 			} else {
 				span.classList.remove("hidden")
@@ -183,30 +194,30 @@ function handleGuess(first) {
 	}
 	let divs = document.querySelectorAll("div.content")
 	divs = Array.from(divs)
-	if (guesser.verseStep<divs.length) {
+	if (guesser.verseStep < divs.length) {
 		divs[guesser.verseStep].scrollIntoView()
 	}
-	if (first==false) {
+	if (first == false) {
 		addOptions()
 	}
-} 
+}
 
 function flashText(span) {
 	if (span.classList.contains("hidden")) {
 		span.classList.remove("hidden")
-		setTimeout(()=>{
+		setTimeout(() => {
 			span.classList.add("hidden")
-		}, 400)	
+		}, 400)
 	}
 }
 
 function addOptions() {
 	guessOptionsCon.innerHTML = ""
-	if (guesser.currentOpts.length==0) {
+	if (guesser.currentOpts.length == 0) {
 		guessResetBtn.style.display = "block"
 		guessResetBtn.style.width = "100%"
 		guessOptionsCon.style.display = "none"
-	
+
 	} else {
 		guessResetBtn.style.display = "none"
 		guessOptionsCon.style.display = "flex"
@@ -215,17 +226,32 @@ function addOptions() {
 		let optBtn = document.createElement("button")
 		optBtn.innerText = opt
 		guessOptionsCon.appendChild(optBtn)
-		optBtn.addEventListener("click", (evt)=>{
-	let check = guesser.go(evt.currentTarget.innerText.trim(), false)
-		if (check) {
-		    handleGuess(false)
-		} else {
-			navigator.vibrate(200)
-			console.log(guesser.state)
-		}
-		}) 
+		optBtn.addEventListener("click", (evt) => {
+			let check = guesser.go(evt.currentTarget.innerText.trim(), false)
+			if (check) {
+				handleGuess(false)
+			} else {
+				navigator.vibrate(200)
+				console.log(guesser.state)
+				flashBody()
+			}
+		})
 	}
 }
+
+function handleError() {
+
+}
+
+function flashBody() {
+	let body = document.querySelector("body")
+	body.style.backgroundColor = "darkred"
+	setTimeout(() => {
+		console.log("hi")
+		body.style.backgroundColor = "rgb(25,25,25)"
+	}, 100)
+}
+
 function resetGuess() {
 	guesser.reset()
 	handleGuess(false)
@@ -242,7 +268,7 @@ function setReading() {
 		spanVerse.innerText = verse["verse"]
 		let spanText = document.createElement("span")
 		spanText.id = "text"
-		spanText.innerText = toggleText(verse["text"],verse["parsed"])
+		spanText.innerText = toggleText(verse["text"], verse["parsed"])
 		p.appendChild(spanVerse)
 		p.appendChild(spanText)
 		div.appendChild(p)
@@ -256,7 +282,7 @@ function setReading() {
 
 }
 
-function toggleText(opt1,opt2) {
+function toggleText(opt1, opt2) {
 	if (full) {
 		return opt1
 	}
@@ -264,38 +290,127 @@ function toggleText(opt1,opt2) {
 }
 
 function addEvent() {
-	letterInput.addEventListener("input", (evt)=>{
+	letterInput.addEventListener("input", (evt) => {
 		let value = evt.target.value
-		let letter = value.charAt(value.length-1)
+		let letter = value.charAt(value.length - 1)
 		letterInput.value = letter
 		let check = guesser.go(letter.toLowerCase(), true)
 		if (check) {
 			handleGuess(true)
 		} else {
 			navigator.vibrate(200)
+			flashBody()
 		}
 
 	})
 }
 
 function hideCons() {
-	let cons = [hideCon, guessCon, guessLetterCon, trainCon]
+	let cons = [hideCon, guessCon, guessLetterCon, trainCon, dragCon]
 	for (const con of cons) {
 		con.style.display = "none"
 	}
 }
+
+function addDragState() {
+	let wordsTrack = []
+	container.innerHTML = ""
+	dragOptwrapper.innerHTML = ""
+	for (let verse of dragger.state) {
+		let div = document.createElement("div")
+		let spanVerse = document.createElement("span")
+		spanVerse.innerText = verse.verse
+		div.appendChild(spanVerse)
+		let divInner = document.createElement("div")
+		divInner.classList.add("content-wrap")
+		div.appendChild(divInner)
+		container.appendChild(div)
+		for (const word of verse.words) {
+			let span = document.createElement("div")
+			span.innerText = word + " ";
+			divInner.appendChild(span)
+			span.classList.add("dragtarget")
+
+		}
+
+		for (const word of verse.opts) {
+			if (wordsTrack.includes(word)) {
+				continue
+			}
+			wordsTrack.push(word)
+			let btn = document.createElement("button")
+			btn.innerText = word
+			btn.draggable = true
+			btn.classList.add("draggable")
+			dragOptwrapper.appendChild(btn)
+		}
+
+	}
+}
+
+function addDragging() {
+	let buttons = document.querySelectorAll("button.draggable")
+	let targets = document.querySelectorAll("div.dragtarget")
+	buttons.forEach((btn) => {
+		btn.addEventListener("dragstart", (e) => {
+			e.dataTransfer.setData("text/plain", e.currentTarget.innerText)
+			console.log(e.currentTarget.innerText)
+		})
+		btn.addEventListener("dragend", (e) => {
+
+		})
+	})
+
+	targets.forEach((target) => {
+		target.addEventListener("dragover", (e) => {
+			e.preventDefault()
+		})
+		target.addEventListener("dragenter", (e) => {
+			console.log("over me")
+			target.style.border = "1px solid red"
+		})
+		target.addEventListener("dragleave", (e) => {
+			target.style.border = "1px solid dodgerblue"
+		})
+		target.addEventListener("drop", (e) => {
+			e.preventDefault()
+			let word = e.dataTransfer.getData("text/plain")
+			console.log(word)
+			target.style.border = "1px solid dodgerblue"
+			let check = checkWord(word, target.innerText)
+			if (check) {
+				target.style.color = "white"
+			} else {
+				navigator.vibrate(100)
+			}
+		})
+	})
+}
+
+function checkWord(guess, target) {
+	target = target.toUpperCase()
+	for (const simbol of [",", "."]) {
+		target = target.replace(simbol, "")
+	}
+	if (guess.trim() == target.toUpperCase()) {
+		return true
+	}
+	return false
+}
+
 function switchMode(mode) {
-	if (mode=="hide-words") {
+	changeHeight(false)
+	if (mode == "hide-words") {
 		hideCons()
 		hideCon.style.display = "flex"
 	}
-	if (mode=="pick-words") {
+	if (mode == "pick-words") {
 		hideCons()
 		guessCon.style.display = "flex"
 		resetGuess()
 		handleGuess(false)
 	}
-	if (mode=="first-letter") {
+	if (mode == "first-letter") {
 		hideCons()
 		letterInput.style.display = "block"
 		letterInput.focus()
@@ -304,13 +419,19 @@ function switchMode(mode) {
 		resetGuess()
 		handleGuess(true)
 	}
-	if (mode=="train") {
+	if (mode == "train") {
 		hideCons()
 		trainCon.style.display = "flex"
+	}
+	if (mode == "drag") {
+		hideCons()
+		dragCon.style.display = "flex"
+		changeHeight(true)
+		addDragState()
+		addDragging()
 	}
 	tasksCon.style.display = "none"
 	h3Tasks.style.display = "none"
 	backBtn.style.display = "block"
 	backLink.style.display = "none"
-	changeHeight(false)
 }

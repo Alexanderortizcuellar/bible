@@ -84,9 +84,12 @@ export class GuessWord {
 		this.step = 0;
 		this.state = [];
 		this.words = this.text.split(" ")
-		this.filteredWords = this._removeDuplicates(this.words)
-		this._wordsToObjt()
 
+		this.filteredWords = this.words.map(word=>{
+			return word.toUpperCase().replace(",","").replace(".", "")
+		})
+		this.filteredWords = this._removeDuplicates(this.filteredWords)
+		this._wordsToObjt()
 	}
 
 	_wordsToObjt() {
@@ -120,7 +123,10 @@ export class GuessWord {
 		}
 		let [_,randIndex] = this._choice(opts)
 		opts.splice(randIndex,0, word)
-		return this._shuffle(opts)
+		opts = opts.map(opt=>{
+			return opt.toUpperCase().replace(",","").replace(".","")
+		})
+		return this._shuffle(this._removeDuplicates(opts))
 	}
 	_checkState(list) {
 		let indexes = []
@@ -211,9 +217,11 @@ export class GuessWords {
 				return false
 			}
 		let word = this.state[this.verseStep]["state"][this.step]["text"]
+		word = word.toUpperCase().replace(",", "").replace(".", "")
 		if (first) {
 		     word = this._fixWord(word)
 		}
+		wordGuess = wordGuess.replace(",","").replace(".", "")
 		if (wordGuess==word) {
 			this.state[this.verseStep]["state"][this.step]["hidden"] = false;
 			this.step +=1
@@ -286,4 +294,30 @@ export class FirstLetter {
 	}
 }
 
+export class Drag {
+	constructor(verses) {
+		this.verses = verses;
+		this.state = this._splitWords()
+	}
 
+	_splitWords() {
+		let state = this.verses.map((verse)=>{
+			return {"book":verse.book, "verse":verse.verse,"text":verse.text, "words":verse.text.split(" "),"opts":this._clean(verse.text.split(" "))}
+		})
+		return state
+	}
+	_removeDuplicates(list) {
+		return [...new Set(list)]
+	}
+	_clean(words) {
+		words = words.map((word)=>{
+			return word.replace(".", "").replace(",", "")
+		})
+		words = this._shuffle(words)
+		return this._removeDuplicates(words)
+	}
+	_shuffle(list) {
+		list.sort(()=>Math.random()-0.5)
+		return list
+	}
+}

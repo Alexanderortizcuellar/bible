@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Memorize</title>
 	<link rel="stylesheet" href="/static/game-style.css">
+	<script src="/static/DragDropTouch.js" charset="utf-8"></script>
 </head>
 <body>
 	<div id="header-wrap">
@@ -54,9 +55,15 @@
 			<span id="kpi">0/0</span>
 			</div>
 			</div>
+			<div class="progress">
+			<div class="task-wrap">
+			<button id="drag">drag</button>
+			<span id="kpi">1/0</span>
+			</div>
+			</div>
 		</div>
 		<div class="guess-letter-wrap" style="display:none;">
-			<input type="text" id="letter"><br>
+			<input type="text" id="letter" autocomplete="off"><br>
 			<button id="show-keys">Show keyboard</button>
 			<button id="guess-letter-reset"></button>
 		</div>
@@ -74,6 +81,11 @@
 	<button id="toggle-train" >
 		Toggle
 	</button>
+	</div>
+	<div class="drag" style="display: none;">
+		<div class="opt-wrapper">
+
+		</div>
 	</div>
 	</div>
 	<script src="/static/utils.js" type="module"></script>

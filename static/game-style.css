@@ -78,16 +78,17 @@ div.line {
 .container {
 	height:60%;
 	background: transparent;
-	margin-top: 1%;
 	overflow-x: hidden;
 	word-wrap: break-word;
-	padding:12px;
+	padding:0 12px;
 	position:relative;
-
 }
 
 .container::-webkit-scrollbar {
 	display: none;
+}
+.content {
+	margin:0;
 }
 #chapter {
 	font-size: 1.5em;
@@ -169,7 +170,7 @@ button#toggle-train {
 div.options {
 	display:flex;
 	padding:10px 10px;
-	justify-content: space-around;
+	justify-content: center;
 	flex-wrap: wrap;
 	align-items: center;
 	width:100%;
@@ -180,11 +181,13 @@ div.options button {
 	outline:none;
 	color:rgb(210,210,210);
 	min-width: 45px;
-	height:35px;
+	height:38px;
 	padding: 8px 6px;
-	font-size: 1.1em;
+	font-size: 0.9em;
+	font-weight: bold;
 	margin-bottom: 8px;
-	margin-right: 2px;
+	margin-right: 5px;
+	text-transform: uppercase;
 }
 input#letter {
 	width:8px;
@@ -236,4 +239,42 @@ span#kpi {
 	background-color: rgb(25,25,25);
 	vertical-align: middle;
 	font-size: 0.8em;
+}
+
+.content-wrap {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+.dragtarget {
+	border:1px solid dodgerblue;
+	height:26px;
+	margin:4px;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+	padding:0px 15px;
+	color:transparent;
+}
+
+.opt-wrapper {
+	width:100%;
+	height:auto;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.draggable {
+	min-width: 30px;
+	height:35px;
+	margin: 4px;
+	border-radius: 4px;
+	color:white;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	overflow-y: hidden;
 }

@@ -110,4 +110,4 @@ def get_info():
     return jsonify({"data": lang_info})
 
 
-app.run(host="192.168.1.9", port=5000)
+#app.run(host="192.168.1.9", port=5000)
