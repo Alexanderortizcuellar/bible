@@ -2,20 +2,20 @@
 
 ## Description
 
-This Flask application serves as a [brief description of your app's purpose or functionality].
+App to help memorize bible verses by creating a set of exercises on each verse.
 
 ## Installation
 
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/your-flask-app.git
+    git clone https://github.com/Alexanderortizcuellar/bible.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd your-flask-app
+    cd bible
     ```
 
 3. Install dependencies:
@@ -32,7 +32,7 @@ To run the Flask application, follow these steps:
 2. Run the following command:
 
     ```bash
-    flask run --app app.py
+    flask --app run app.py
     ```
 
 3. Open your web browser and navigate to [http://localhost:5000](http://localhost:5000) to access the application.
