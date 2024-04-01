@@ -41,6 +41,3 @@ To run the Flask application, follow these steps:
 
 Contributions are welcome! If you want to contribute to this project, please fork the repository and submit a pull request with your changes.
 
-## License
-
-This project is licensed under the [License Name] License - see the [LICENSE](LICENSE) file for details.
